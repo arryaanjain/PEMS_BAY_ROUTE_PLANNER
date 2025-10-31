@@ -1,0 +1,12 @@
+
+# FastAPI app dependencies
+fastapi>=0.95.0
+uvicorn[standard]>=0.18.0
+
+# Database
+SQLAlchemy>=1.4.0
+pymysql>=1.0.2
+
+# Optional: read .env
+python-dotenv>=1.0.0
+
