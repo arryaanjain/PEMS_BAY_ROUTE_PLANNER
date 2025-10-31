@@ -9,7 +9,8 @@ import { TimeSettings } from '../components/TimeSettings';
 import { Button } from '../components/Button';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { saveTrip } from '../utils/storage';
-import { type Waypoint, type ItineraryStop } from '../types';
+import { optimizeRoute } from '../services/api';
+import { type Waypoint } from '../types';
 
 export function TripPlannerPage() {
   const navigate = useNavigate();
@@ -22,13 +23,10 @@ export function TripPlannerPage() {
   const [duration, setDuration] = useState(8);
   const [durationType, setDurationType] = useState<'hours' | 'days'>('hours');
   const [isOptimizing, setIsOptimizing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleAddWaypoint = (name: string) => {
-    const newWaypoint: Waypoint = {
-      id: crypto.randomUUID(),
-      name,
-    };
-    setWaypoints([...waypoints, newWaypoint]);
+  const handleAddWaypoint = (waypoint: Waypoint) => {
+    setWaypoints([...waypoints, waypoint]);
   };
 
   const handleDeleteWaypoint = (id: string) => {
@@ -46,91 +44,39 @@ export function TripPlannerPage() {
     }
 
     setIsOptimizing(true);
+    setError(null);
 
-    // Simulate API call for demo
-    // TODO: Replace with actual API call to backend
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      // Call real backend API
+      const optimizedRoute = await optimizeRoute({
+        waypoints,
+        startTime,
+        duration,
+        durationType,
+      });
 
-    // Create mock optimized route
-    const tripId = crypto.randomUUID();
-    const trip = {
-      id: tripId,
-      title: `Trip to ${waypoints[waypoints.length - 1].name}`,
-      date: new Date(startTime).toLocaleDateString(),
-      stops: waypoints.length,
-      waypoints,
-      startTime,
-      duration,
-      durationType,
-      optimizedRoute: {
-        recommendedStart: new Date(startTime).toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-        totalTime: '4h 12m',
-        warnings: [
-          {
-            severity: 'high' as const,
-            message: `High Congestion: Avoid the area near ${waypoints[1]?.name || 'stop 2'} after 5 PM.`,
-          },
-        ],
-        itinerary: [
-          {
-            day: 1,
-            date: new Date(startTime).toLocaleDateString(),
-            stops: waypoints.flatMap((wp, idx): ItineraryStop[] => {
-              const baseTime = new Date(startTime);
-              const offset = idx * 90; // 1.5 hours between stops
-              
-              const departTime = new Date(baseTime.getTime() + offset * 60000);
-              const arriveTime = new Date(baseTime.getTime() + (offset + 30) * 60000);
+      // Create trip with optimized route from API
+      const tripId = crypto.randomUUID();
+      const trip = {
+        id: tripId,
+        title: `Trip to ${waypoints[waypoints.length - 1].name}`,
+        date: new Date(startTime).toLocaleDateString(),
+        stops: waypoints.length,
+        waypoints,
+        startTime,
+        duration,
+        durationType,
+        optimizedRoute,
+      };
 
-              if (idx === 0) {
-                return [
-                  {
-                    time: departTime.toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    }),
-                    type: 'depart' as const,
-                    location: wp.name,
-                    insight: 'Starting your journey',
-                  },
-                ];
-              }
-              
-              return [
-                {
-                  time: arriveTime.toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  }),
-                  type: 'arrive' as const,
-                  location: wp.name,
-                  insight:
-                    idx === 1
-                      ? 'This route has light traffic.'
-                      : 'Busiest part of your trip. Expect 20 min of slow traffic.',
-                  trafficLevel: idx === 1 ? ('light' as const) : ('heavy' as const),
-                },
-                {
-                  time: departTime.toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  }),
-                  type: 'depart' as const,
-                  location: wp.name,
-                },
-              ];
-            }),
-          },
-        ],
-      },
-    };
-
-    saveTrip(trip);
-    setIsOptimizing(false);
-    navigate(`/route/${tripId}`);
+      saveTrip(trip);
+      setIsOptimizing(false);
+      navigate(`/route/${tripId}`);
+    } catch (err) {
+      console.error('Optimization error:', err);
+      setError(err instanceof Error ? err.message : 'Failed to optimize route. Please try again.');
+      setIsOptimizing(false);
+    }
   };
 
   if (isOptimizing) {
@@ -179,6 +125,13 @@ export function TripPlannerPage() {
           >
             Optimize My Route
           </Button>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+              <p className="font-medium">Error</p>
+              <p className="text-sm">{error}</p>
+            </div>
+          )}
 
           {waypoints.length < 2 && (
             <p className="text-sm text-gray-500 text-center">
