@@ -1,0 +1,273 @@
+{
+	"info": {
+		"name": "PEMS Bay Route Planner",
+		"description": "API endpoints for PEMS Bay traffic-aware route optimization",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Routes",
+			"item": [
+				{
+					"name": "Optimize Route (2 Waypoints)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"waypoints\": [\n    {\n      \"id\": \"1\",\n      \"name\": \"San Francisco\",\n      \"lat\": 37.7749,\n      \"lng\": -122.4194\n    },\n    {\n      \"id\": \"2\",\n      \"name\": \"Oakland\",\n      \"lat\": 37.8044,\n      \"lng\": -122.2712\n    }\n  ],\n  \"startTime\": \"2025-11-04T08:00:00Z\",\n  \"duration\": 8,\n  \"durationType\": \"hours\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/routes/optimize",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes",
+								"optimize"
+							]
+						},
+						"description": "Test route optimization with 2 waypoints (generates 2 route permutations: AB, BA)"
+					},
+					"response": []
+				},
+				{
+					"name": "Optimize Route (3 Waypoints)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"waypoints\": [\n    {\n      \"id\": \"1\",\n      \"name\": \"San Francisco\",\n      \"lat\": 37.7749,\n      \"lng\": -122.4194\n    },\n    {\n      \"id\": \"2\",\n      \"name\": \"Oakland\",\n      \"lat\": 37.8044,\n      \"lng\": -122.2712\n    },\n    {\n      \"id\": \"3\",\n      \"name\": \"Berkeley\",\n      \"lat\": 37.8715,\n      \"lng\": -122.2730\n    }\n  ],\n  \"startTime\": \"2025-11-04T08:00:00Z\",\n  \"duration\": 8,\n  \"durationType\": \"hours\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/routes/optimize",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes",
+								"optimize"
+							]
+						},
+						"description": "Test route optimization with 3 waypoints (generates 6 route permutations)"
+					},
+					"response": []
+				},
+				{
+					"name": "Optimize Route (4 Waypoints - Heavy)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"waypoints\": [\n    {\n      \"id\": \"1\",\n      \"name\": \"San Francisco\",\n      \"lat\": 37.7749,\n      \"lng\": -122.4194\n    },\n    {\n      \"id\": \"2\",\n      \"name\": \"Oakland\",\n      \"lat\": 37.8044,\n      \"lng\": -122.2712\n    },\n    {\n      \"id\": \"3\",\n      \"name\": \"Berkeley\",\n      \"lat\": 37.8715,\n      \"lng\": -122.2730\n    },\n    {\n      \"id\": \"4\",\n      \"name\": \"San Jose\",\n      \"lat\": 37.3382,\n      \"lng\": -121.8863\n    }\n  ],\n  \"startTime\": \"2025-11-04T08:00:00Z\",\n  \"duration\": 12,\n  \"durationType\": \"hours\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/routes/optimize",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes",
+								"optimize"
+							]
+						},
+						"description": "Test with 4 waypoints (generates 24 route permutations - may take longer)"
+					},
+					"response": []
+				},
+				{
+					"name": "Optimize Route (Peak Hours)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"waypoints\": [\n    {\n      \"id\": \"1\",\n      \"name\": \"San Francisco Downtown\",\n      \"lat\": 37.7749,\n      \"lng\": -122.4194\n    },\n    {\n      \"id\": \"2\",\n      \"name\": \"Oakland\",\n      \"lat\": 37.8044,\n      \"lng\": -122.2712\n    },\n    {\n      \"id\": \"3\",\n      \"name\": \"Fremont\",\n      \"lat\": 37.5485,\n      \"lng\": -121.9886\n    }\n  ],\n  \"startTime\": \"2025-11-04T17:00:00Z\",\n  \"duration\": 4,\n  \"durationType\": \"hours\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/routes/optimize",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes",
+								"optimize"
+							]
+						},
+						"description": "Test during evening rush hour (5 PM) to see heavy traffic predictions"
+					},
+					"response": []
+				},
+				{
+					"name": "Optimize Route (Multi-Day Trip)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"waypoints\": [\n    {\n      \"id\": \"1\",\n      \"name\": \"San Francisco\",\n      \"lat\": 37.7749,\n      \"lng\": -122.4194\n    },\n    {\n      \"id\": \"2\",\n      \"name\": \"Palo Alto\",\n      \"lat\": 37.4419,\n      \"lng\": -122.1430\n    },\n    {\n      \"id\": \"3\",\n      \"name\": \"San Jose\",\n      \"lat\": 37.3382,\n      \"lng\": -121.8863\n    }\n  ],\n  \"startTime\": \"2025-11-04T09:00:00Z\",\n  \"duration\": 2,\n  \"durationType\": \"days\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/routes/optimize",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes",
+								"optimize"
+							]
+						},
+						"description": "Test multi-day trip with duration in days instead of hours"
+					},
+					"response": []
+				},
+				{
+					"name": "Optimize Route - Invalid (Outside PEMS Bay)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"waypoints\": [\n    {\n      \"id\": \"1\",\n      \"name\": \"Los Angeles\",\n      \"lat\": 34.0522,\n      \"lng\": -118.2437\n    },\n    {\n      \"id\": \"2\",\n      \"name\": \"San Diego\",\n      \"lat\": 32.7157,\n      \"lng\": -117.1611\n    }\n  ],\n  \"startTime\": \"2025-11-04T08:00:00Z\",\n  \"duration\": 6,\n  \"durationType\": \"hours\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/routes/optimize",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes",
+								"optimize"
+							]
+						},
+						"description": "Test validation - should return 422 error (locations outside PEMS Bay region)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Locations",
+			"item": [
+				{
+					"name": "Autocomplete Location",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/locations/autocomplete?query=san francisco",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"locations",
+								"autocomplete"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "san francisco"
+								}
+							]
+						},
+						"description": "Search for location suggestions (requires Google Maps API key)"
+					},
+					"response": []
+				},
+				{
+					"name": "Validate Location",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"San Francisco\",\n  \"coordinates\": {\n    \"lat\": 37.7749,\n    \"lng\": -122.4194\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/locations/validate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"locations",
+								"validate"
+							]
+						},
+						"description": "Validate if a location is within PEMS Bay region"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				},
+				"description": "Check if the API is running"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}
