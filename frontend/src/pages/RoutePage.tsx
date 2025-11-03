@@ -6,8 +6,8 @@ import type { Trip } from '../types';
 import { getTrip } from '../utils/storage';
 import { Header } from '../components/Header';
 import { MapDisplay } from '../components/MapDisplay';
-import { KeyInsights } from '../components/KeyInsights';
-import { TrafficWarning } from '../components/TrafficWarning';
+import { RouteOverview } from '../components/RouteOverview';
+import { RouteSegmentCard } from '../components/RouteSegmentCard';
 import { ItineraryView } from '../components/ItineraryView';
 import { ActionButtons } from '../components/ActionButtons';
 
@@ -52,26 +52,35 @@ export function RoutePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      <Header title="Your Optimized Plan" showBack />
+      <Header title="Your Optimized Route" showBack />
 
-      <main className="container mx-auto px-4 py-6 max-w-4xl space-y-6">
+      <main className="container mx-auto px-4 py-6 max-w-6xl space-y-6">
+        {/* Route Overview with CNN Predictions */}
+        <RouteOverview 
+          optimizedRoute={trip.optimizedRoute} 
+          originalWaypoints={trip.waypoints}
+        />
+
         {/* Map */}
         <MapDisplay waypoints={trip.waypoints} />
 
-        {/* Key Insights */}
-        <KeyInsights route={trip.optimizedRoute} />
-
-        {/* Traffic Warnings */}
-        {trip.optimizedRoute.warnings.length > 0 && (
-          <div className="space-y-3">
-            {trip.optimizedRoute.warnings.map((warning, idx) => (
-              <TrafficWarning key={idx} warning={warning} />
-            ))}
+        {/* Route Segments with Traffic Data */}
+        {trip.optimizedRoute.segments && trip.optimizedRoute.segments.length > 0 && (
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-gray-900">Route Segments & Traffic</h2>
+            <div className="grid gap-4 md:grid-cols-2">
+              {trip.optimizedRoute.segments.map((segment, index) => (
+                <RouteSegmentCard key={segment.id} segment={segment} index={index} />
+              ))}
+            </div>
           </div>
         )}
 
-        {/* Itinerary */}
-        <ItineraryView itinerary={trip.optimizedRoute.itinerary} />
+        {/* Detailed Itinerary */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold text-gray-900">Detailed Itinerary</h2>
+          <ItineraryView itinerary={trip.optimizedRoute.itinerary} />
+        </div>
       </main>
 
       {/* Action Buttons */}

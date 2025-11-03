@@ -100,32 +100,6 @@ export async function optimizeRoute(request: OptimizeRouteRequest): Promise<Opti
   return response.json();
 }
 
-// Traffic Prediction
-export interface TrafficPrediction {
-  segmentId: string;
-  travelTime: number;
-  trafficLevel: 'light' | 'moderate' | 'heavy';
-  congestionScore: number;
-}
-
-export async function predictTraffic(
-  from: { lat: number; lng: number },
-  to: { lat: number; lng: number },
-  time: string
-): Promise<TrafficPrediction> {
-  const params = new URLSearchParams({
-    fromLat: from.lat.toString(),
-    fromLng: from.lng.toString(),
-    toLat: to.lat.toString(),
-    toLng: to.lng.toString(),
-    time,
-  });
-  
-  const response = await fetch(`${API_URL}/api/traffic/predict?${params}`);
-  if (!response.ok) throw new Error('Failed to get traffic prediction');
-  return response.json();
-}
-
 // Trip Management (optional - for server-side storage)
 export async function saveTrip(trip: Trip): Promise<Trip> {
   const response = await fetch(`${API_URL}/api/trips`, {

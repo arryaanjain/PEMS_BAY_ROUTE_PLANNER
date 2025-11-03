@@ -20,22 +20,49 @@ export interface Trip {
   optimizedRoute?: OptimizedRoute;
 }
 
-export interface OptimizedRoute {
-  recommendedStart: string;
-  totalTime: string;
-  warnings: TrafficWarning[];
-  itinerary: ItineraryDay[];
-  mapData?: {
-    center: { lat: number; lng: number };
-    zoom: number;
-    waypoints: Array<{ lat: number; lng: number; name: string }>;
+// Route segment with traffic predictions
+export interface RouteSegment {
+  id: string;
+  fromLocation: {
+    name: string;
+    lat: number;
+    lng: number;
   };
+  toLocation: {
+    name: string;
+    lat: number;
+    lng: number;
+  };
+  predictedTravelTime: number; // minutes
+  trafficCondition: 'light' | 'moderate' | 'heavy';
+  congestionScore: number; // 0-1
+  timeWindow: {
+    start: string;
+    end: string;
+  };
+}
+
+// Optimized route from backend
+export interface OptimizedRoute {
+  optimizedOrder: number[]; // Indices of waypoints in optimal order
+  recommendedStart: string; // ISO datetime
+  totalTravelTime: number; // minutes
+  insights: {
+    warnings: TrafficWarning[];
+    recommendations: any[];
+  };
+  itinerary: ItineraryDay[];
+  segments: RouteSegment[];
 }
 
 export interface TrafficWarning {
   severity: 'low' | 'medium' | 'high';
   message: string;
-  segment?: string;
+  location?: string;
+  timeWindow?: {
+    start: string;
+    end: string;
+  };
 }
 
 export interface ItineraryDay {
@@ -48,6 +75,9 @@ export interface ItineraryStop {
   time: string;
   type: 'depart' | 'arrive';
   location: string;
-  insight?: string;
-  trafficLevel?: 'light' | 'moderate' | 'heavy';
+  segmentId?: string | null;
+  travelTime?: number | null; // minutes
+  insight?: string | null;
+  trafficLevel?: 'light' | 'moderate' | 'heavy' | null;
 }
+
