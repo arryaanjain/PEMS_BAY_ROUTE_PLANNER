@@ -10,6 +10,11 @@ httpx>=0.24.0
 SQLAlchemy>=1.4.0
 pymysql>=1.0.2
 
+# Machine Learning
+tensorflow>=2.13.0
+numpy>=1.24.0
+scikit-learn>=1.6.0  # Match version used to pickle scaler
+
 # Optional: read .env
 python-dotenv>=1.0.0
 
