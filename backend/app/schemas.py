@@ -55,12 +55,16 @@ class OptimizeRouteRequest(BaseModel):
     durationType: Literal["hours", "days"]
 
 
-class Warning(BaseModel):
+class TrafficWarning(BaseModel):
     """Traffic or route warning."""
     severity: Literal["low", "medium", "high"]
     message: str
     location: Optional[str] = None
     timeWindow: Optional[dict] = None
+
+
+# Alias for backwards compatibility
+Warning = TrafficWarning
 
 
 class Recommendation(BaseModel):
@@ -90,8 +94,8 @@ class ItineraryDay(BaseModel):
 class RouteSegment(BaseModel):
     """A segment between two waypoints."""
     id: str
-    from_location: Waypoint = Field(..., alias="from")
-    to: Waypoint
+    fromLocation: dict  # {name, lat, lng}
+    toLocation: dict    # {name, lat, lng}
     predictedTravelTime: int  # minutes
     trafficCondition: Literal["light", "moderate", "heavy"]
     congestionScore: float = Field(..., ge=0, le=1)
