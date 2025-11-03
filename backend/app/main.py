@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
-from .routes import locations, routes as route_endpoints, traffic
+from .routes import locations, routes as route_endpoints
 from . import crud  # Keep old CRUD routes for backward compatibility
 
 
@@ -27,7 +27,6 @@ def create_app() -> FastAPI:
     # Include routers
     app.include_router(locations.router, prefix="/api")
     app.include_router(route_endpoints.router, prefix="/api")
-    app.include_router(traffic.router, prefix="/api")
     
     # Legacy CRUD routes (from sample app)
     # app.include_router(crud_router, prefix="/api")
