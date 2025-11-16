@@ -32,8 +32,8 @@ class Settings(BaseSettings):
     # API settings
     # Allowed CORS origins. Can be overridden by setting CORS_ORIGINS env var as
     # a comma-separated list (e.g. CORS_ORIGINS="https://app.example.com,http://localhost:5173").
-    # Default includes localhost and deployed frontend origin.
-    cors_origins: str = "http://localhost:5173,http://localhost:3000,https://pems-bay-route-planner.onrender.com"
+    # Default includes localhost and deployed frontends (Vercel + Render).
+    cors_origins: str = "http://localhost:5173,http://localhost:3000,https://pems-bay-route-planner.vercel.app,https://pems-bay-route-planner.onrender.com,*"
     
     model_config = SettingsConfigDict(
         env_file=Path(__file__).parents[1] / ".env",
