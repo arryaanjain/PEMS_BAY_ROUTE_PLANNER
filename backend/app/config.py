@@ -30,7 +30,14 @@ class Settings(BaseSettings):
     pems_bay_max_lng: float = -121.8
     
     # API settings
-    cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000"]
+    # Allowed CORS origins. Can be overridden by setting CORS_ORIGINS in the env as
+    # a comma-separated list (e.g. CORS_ORIGINS="https://app.example.com,http://localhost:5173").
+    # Include the deployed frontend origin by default so Render-hosted frontend can talk to API.
+    cors_origins: list[str] = [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://pems-bay-route-planner.onrender.com",
+    ]
     
     model_config = SettingsConfigDict(
         env_file=Path(__file__).parents[1] / ".env",
