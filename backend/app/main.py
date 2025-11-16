@@ -72,10 +72,19 @@ def create_app() -> FastAPI:
         version="1.0.0",
     )
     
+    # Parse CORS origins from config
+    cors_origins = settings.cors_origins if settings.cors_origins else settings.cors_origins_str.split(",")
+    cors_origins = [o.strip() for o in cors_origins]
+    
+    # Debug logging
+    print(f"\n🔧 CORS Configuration:")
+    print(f"   Raw string: {settings.cors_origins_str}")
+    print(f"   Parsed origins: {cors_origins}")
+    
     # Configure CORS
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.cors_origins,
+        allow_origins=cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

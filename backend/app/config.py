@@ -1,6 +1,7 @@
 """Application configuration using pydantic-settings."""
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import field_validator
 from pathlib import Path
 
 
@@ -32,18 +33,25 @@ class Settings(BaseSettings):
     # API settings
     # Allowed CORS origins. Can be overridden by setting CORS_ORIGINS in the env as
     # a comma-separated list (e.g. CORS_ORIGINS="https://app.example.com,http://localhost:5173").
-    # Include the deployed frontend origin by default so Render-hosted frontend can talk to API.
-    cors_origins: list[str] = [
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "https://pems-bay-route-planner.onrender.com",
-    ]
+    # Default includes localhost and deployed frontend origin.
+    cors_origins_str: str = "http://localhost:5173,http://localhost:3000,https://pems-bay-route-planner.onrender.com"
+    cors_origins: list[str] = []
     
     model_config = SettingsConfigDict(
         env_file=Path(__file__).parents[1] / ".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
     )
+    
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, v):
+        """Parse CORS origins from comma-separated string."""
+        if isinstance(v, list):
+            return v
+        if isinstance(v, str):
+            return [origin.strip() for origin in v.split(",")]
+        return ["*"]
     
     def get_database_url(self) -> str:
         """Get database URL, constructing it from parts if not provided directly."""
