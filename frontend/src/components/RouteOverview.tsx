@@ -1,5 +1,5 @@
 import { type OptimizedRoute, type Waypoint } from '../types';
-import { Clock, Calendar, TrendingUp, MapPin, AlertTriangle } from 'lucide-react';
+import { Calendar, TrendingUp, MapPin, AlertTriangle } from 'lucide-react';
 
 interface RouteOverviewProps {
   optimizedRoute: OptimizedRoute;

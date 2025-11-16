@@ -30,7 +30,7 @@ export function KeyInsights({ route }: KeyInsightsProps) {
           </div>
           <div>
             <p className="text-sm text-gray-600">Predicted Travel Time</p>
-            <p className="text-lg font-semibold text-gray-900">{route.totalTime}</p>
+            <p className="text-lg font-semibold text-gray-900">{route.totalTravelTime}</p>
           </div>
         </div>
 
